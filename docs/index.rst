@@ -56,6 +56,43 @@ Det funksjonelle behovet på helsenorge
     * Oppmøtested ("Se innkallingsbrev")
 
 
+Generell FHIR-server eller kun for timer?
+=========================================
+
+En kan tenke seg to alternativer for hvordan server-siden utvikles:
+
+ * Alternativ 1: En generell FHIR-tjeneste som tar i mot spørringer etter FHIR-standarden og returnerer en FHIR Bundle som spesifisert i spørringen.
+ * Alternativ 2: En tjeneste som tar inn innbyggers personnummer (og evt andre parametre vi trenger for å dekke det funksjonelle behovet) og returnerer en nærmere spesifisert FHIR Bundle.
+
+Dette valget vil påvirke både hvem som kan lage tjenesten og hvilket omfang det vil være å utvikle en slik tjeneste.
+
+
+.. list-table::
+   :header-rows: 1
+
+   * - Alternativ
+     - Hvem kan lage?
+     - Omfang
+   * - Generell FHIR-tjeneste
+     - EPJ-leverandør
+     - Stort
+   * - Spesifikk for timer
+     - RHF integrasjonsplattform
+
+       EPJ-leverandør
+     - Mindre
+
+
+Noen ting det kan være nyttig å tenke på
+========================================
+
+* Det funksjonelle behovet kan være svært forskjellig fra en integrasjon til en annen
+* Derfor kan det være vanskelig å få til en generell FHIR-server som kan dekke alle behov
+
+
+Div notater
+===========
+
 mol_molekyl_timeavtale: appointment-details-component.jsx
 
 "Antatt varighet" dersom
