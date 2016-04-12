@@ -54,6 +54,7 @@ clean:
 
 .PHONY: html
 html:
+	python ..\create_example_bundle.py > bundle.xml
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."

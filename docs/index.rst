@@ -90,6 +90,33 @@ Noen ting det kan være nyttig å tenke på
 * Derfor kan det være vanskelig å få til en generell FHIR-server som kan dekke alle behov
 
 
+Eksempel på FHIR-bundle
+=======================
+
+For å dekke det funksjonelle behovet benytter vi disse ressursene med felter:
+
+* Encounter
+
+ * Encounter.status: Om timen er fremtidig, ferdig osv. (planned, arrived, in-progress, on-leave, finished, cancelled)
+ * Encounter.class: Type kontakt (inpatient, outpatient, ambulatory, emergency, home, field, daytime, virtual, other)
+ * Encounter.period: Start- og slutt-tid
+ * Encounter.location.location: Referanse til oppmøtested
+ * Encounter.incomingReferral: Referanse til henvisning
+
+* Location
+
+ * Location.name: Oppmøtested
+
+* DocumentReference
+
+ * DocumentReference.description: Tekst som vises i klikkbar lenke
+ * DocumentReference.context.encounter: Referanse til kontakt
+ * DocumentReference.masterIdentifier: XDS dokument-ID
+
+.. literalinclude:: bundle.xml
+   :language: xml
+   :linenos:
+
 Div notater
 ===========
 

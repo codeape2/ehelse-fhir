@@ -15,13 +15,15 @@ LOCATIONS = [
 
 DOCUMENTREFERENCES = [
     {
-        "title": "Innkallingsbrev",
-        "encounterref": "2"
+        "description": "Innkallingsbrev",
+        "encounterref": "2",
+        "xdsdocid": "157222",
     },
 
     {
-        "title": "Viktig informasjon før du kommer til timen",
-        "encounterref": "2"
+        "description": "Viktig informasjon før du kommer til timen",
+        "encounterref": "2",
+        "xdsdocid": "164399",
     }
 ]
 
@@ -29,7 +31,8 @@ ENCOUNTERS = [
     {
         "start": ldt(2016, 5, 3, 12, 30),
         "end": ldt(2016, 5, 3, 13, 0),
-        "locationref": "2"
+        "locationref": "2",
+        "class": "outpatient" # inpatient, outpatient, ambulatory, emergency, home, field, daytime, virtual, other
     }
 ]
 
@@ -48,6 +51,8 @@ def add_subelements_from_dict(element, subelements_dict):
         if k.startswith("@"):
             element.attrib[k[1:]] = v
         else:
+            if k == "class_":
+                k = "class"
             subelement = ET.SubElement(element, FHIR + k)
             add_subelements_from_dict(subelement, v)
         #add_subelements_from_dict(subelement, v)
@@ -79,6 +84,7 @@ encounters = [
     FHIRElement(
         "Encounter",
         id=value(str(i + 1)),
+        class_=value(encounter_dict["class"]),
         period={"start": value(encounter_dict["start"].isoformat()), "end": value(encounter_dict["end"].isoformat())},
         location={
             "location": {"reference": value("Location/{}".format(encounter_dict["locationref"]))}
@@ -89,7 +95,9 @@ encounters = [
 documentreferences = [
     FHIRElement(
         "DocumentReference",
-        id=value(str(i+1)),
+        id=value(document_dict["xdsdocid"]),
+        description=value(document_dict["description"]),
+        masterIdentifier={"value": value(document_dict["xdsdocid"])},
         context={
             "encounter": {"reference": value("Encounter/{}".format(document_dict["encounterref"]))}
         }

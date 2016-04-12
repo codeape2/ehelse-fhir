@@ -1,0 +1,76 @@
+<Bundle xmlns="http://hl7.org/fhir">
+  <type value="searchset"/>
+  <entry>
+    <resource>
+      <Encounter>
+        <location>
+          <location>
+            <reference value="Location/2"/>
+          </location>
+        </location>
+        <period>
+          <start value="2016-05-03T12:30:00+02:00"/>
+          <end value="2016-05-03T13:00:00+02:00"/>
+        </period>
+        <id value="1"/>
+      </Encounter>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
+      <Location>
+        <name value="Se innkallingsbrev"/>
+        <id value="1"/>
+      </Location>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
+      <Location>
+        <name value="Medisinsk poliklinikk, Søndregate 18, STOKMARKNES"/>
+        <id value="2"/>
+      </Location>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
+      <Location>
+        <name value="Beh.omr.K3 Bodø, Prinsensgt. 164, Bodø"/>
+        <id value="3"/>
+      </Location>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
+      <DocumentReference>
+        <context>
+          <encounter>
+            <reference value="Encounter/2"/>
+          </encounter>
+        </context>
+        <description value="Innkallingsbrev"/>
+        <id value="1"/>
+        <masterIdentifier>
+          <value value="157222"/>
+        </masterIdentifier>
+      </DocumentReference>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
+      <DocumentReference>
+        <context>
+          <encounter>
+            <reference value="Encounter/2"/>
+          </encounter>
+        </context>
+        <description value="Viktig informasjon før du kommer til timen"/>
+        <id value="2"/>
+        <masterIdentifier>
+          <value value="164399"/>
+        </masterIdentifier>
+      </DocumentReference>
+    </resource>
+  </entry>
+</Bundle>
+
