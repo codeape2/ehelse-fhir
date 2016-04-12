@@ -13,6 +13,18 @@ LOCATIONS = [
     "Beh.omr.K3 Bodø, Prinsensgt. 164, Bodø",
 ]
 
+DOCUMENTREFERENCES = [
+    {
+        "title": "Innkallingsbrev",
+        "encounterref": "2"
+    },
+
+    {
+        "title": "Viktig informasjon før du kommer til timen",
+        "encounterref": "2"
+    }
+]
+
 ENCOUNTERS = [
     {
         "start": ldt(2016, 5, 3, 12, 30),
@@ -74,8 +86,20 @@ encounters = [
     )
     for i, encounter_dict in enumerate(ENCOUNTERS)]
 
+documentreferences = [
+    FHIRElement(
+        "DocumentReference",
+        id=value(str(i+1)),
+        context={
+            "encounter": {"reference": value("Encounter/{}".format(document_dict["encounterref"]))}
+        }
+    )
+    for i, document_dict in enumerate(DOCUMENTREFERENCES)
+]
+
 #location = FHIRElement("Location", name=value(LOCATIONS[0]))
 bundle.extend(wrap_in_entry(encounter) for encounter in encounters)
 bundle.extend(wrap_in_entry(location) for location in locations)
+bundle.extend(wrap_in_entry(dref) for dref in documentreferences)
 #printprettyxml(location)
 printprettyxml(bundle)
