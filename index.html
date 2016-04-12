@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="nb_NO">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>FHIR for utveksling av informasjon om timer &mdash; EHelse-FHIR 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="top" title="EHelse-FHIR 1 documentation" href="#" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="fhir-for-utveksling-av-informasjon-om-timer">
+<h1>FHIR for utveksling av informasjon om timer<a class="headerlink" href="#fhir-for-utveksling-av-informasjon-om-timer" title="Permalink til denne oversikten">¶</a></h1>
+<div class="section" id="bakgrunn">
+<h2>Bakgrunn<a class="headerlink" href="#bakgrunn" title="Permalink til denne oversikten">¶</a></h2>
+<p>Helsenorge har ønske om en rikere PULL-tjeneste for timer, og ønsker å benytte FHIR for dette.</p>
+<p>Dette dokumentet er innspill rundt bruk av FHIR-ressurser.</p>
+</div>
+<div class="section" id="om-fhir">
+<h2>Om FHIR<a class="headerlink" href="#om-fhir" title="Permalink til denne oversikten">¶</a></h2>
+<p>FHIR-standarden har flere deler:</p>
+<ul class="simple">
+<li>Ressurstyper, inkludert sammenhenger mellom ressurser.</li>
+<li>Spesifikasjon av et REST-grensesnitt.</li>
+</ul>
+</div>
+<div class="section" id="dagens-losning">
+<h2>Dagens løsning<a class="headerlink" href="#dagens-losning" title="Permalink til denne oversikten">¶</a></h2>
+<p>I dag gjør helsenorge en HL7v3 PRSC_IN010701NO-spørring mot et endepunkt hos RHFet. Systemet gjør en slik spørring når brukeren går inn på siden for timeavtaler på helsenorge. Spørringen gjøres med SOAP over HTTP.</p>
+<p>Helsenorge bruker resultatet fra spørringen for å vise innbyggerens timer i portalen.</p>
+<p>Sammen med informasjon om timen viser portalen to typer informasjon som ligger lagret i personlig helsearkiv (PHA):</p>
+<blockquote>
+<div><ul class="simple">
+<li>Innkallingsbrev knyttet til timen</li>
+<li>Dialog knyttet til timen</li>
+</ul>
+</div></blockquote>
+<p>Se også:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="http://www.hl7.no/hl7wiki/index.php?title=Implementasjonsguide_HL7">http://www.hl7.no/hl7wiki/index.php?title=Implementasjonsguide_HL7</a></li>
+<li><a class="reference external" href="http://hl7.ihelse.net/Dokument/HL7v3_ImplementationGuide_3.0d.doc">http://hl7.ihelse.net/Dokument/HL7v3_ImplementationGuide_3.0d.doc</a></li>
+<li><a class="reference external" href="http://www.nasjonalikt.no/filestore/Dokumenter/Prosjekter_og_tiltak/Sluttrapporter/Vedl05b2011-09-28KITH1038-2011HL7v3_ImplementationGuide_v40.pdf">http://www.nasjonalikt.no/filestore/Dokumenter/Prosjekter_og_tiltak/Sluttrapporter/Vedl05b2011-09-28KITH1038-2011HL7v3_ImplementationGuide_v40.pdf</a></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="det-funksjonelle-behovet-pa-helsenorge">
+<h2>Det funksjonelle behovet på helsenorge<a class="headerlink" href="#det-funksjonelle-behovet-pa-helsenorge" title="Permalink til denne oversikten">¶</a></h2>
+<div class="figure" id="id1">
+<img alt="_images/funksjonelle_behov.png" src="_images/funksjonelle_behov.png" />
+<p class="caption"><span class="caption-text">Time-molekylet på helsenorge.no</span></p>
+<div class="legend">
+<p>For en time viser systemet:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Oppmøtetidspunkt og varighet</li>
+<li>Status (&#8220;Tildelt&#8221;)</li>
+<li>Type time (&#8220;Poliklinisk time&#8221;) -</li>
+<li>Avdeling (&#8220;Medisinsk avdeling HFO&#8221;)</li>
+<li>Oppmøtested (&#8220;Se innkallingsbrev&#8221;)</li>
+<li>Oppmøtested (&#8220;Se innkallingsbrev&#8221;)</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="generell-fhir-server-eller-kun-for-timer">
+<h2>Generell FHIR-server eller kun for timer?<a class="headerlink" href="#generell-fhir-server-eller-kun-for-timer" title="Permalink til denne oversikten">¶</a></h2>
+<p>En kan tenke seg to alternativer for hvordan server-siden utvikles:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Alternativ 1: En generell FHIR-tjeneste som tar i mot spørringer etter FHIR-standarden og returnerer en FHIR Bundle som spesifisert i spørringen.</li>
+<li>Alternativ 2: En tjeneste som tar inn innbyggers personnummer (og evt andre parametre vi trenger for å dekke det funksjonelle behovet) og returnerer en nærmere spesifisert FHIR Bundle.</li>
+</ul>
+</div></blockquote>
+<p>Dette valget vil påvirke både hvem som kan lage tjenesten og hvilket omfang det vil være å utvikle en slik tjeneste.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Alternativ</th>
+<th class="head">Hvem kan lage?</th>
+<th class="head">Omfang</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Generell FHIR-tjeneste</td>
+<td>EPJ-leverandør</td>
+<td>Stort</td>
+</tr>
+<tr class="row-odd"><td>Spesifikk for timer</td>
+<td><p class="first">RHF integrasjonsplattform</p>
+<p class="last">EPJ-leverandør</p>
+</td>
+<td>Mindre</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="noen-ting-det-kan-vaere-nyttig-a-tenke-pa">
+<h2>Noen ting det kan være nyttig å tenke på<a class="headerlink" href="#noen-ting-det-kan-vaere-nyttig-a-tenke-pa" title="Permalink til denne oversikten">¶</a></h2>
+<ul class="simple">
+<li>Det funksjonelle behovet kan være svært forskjellig fra en integrasjon til en annen</li>
+<li>Derfor kan det være vanskelig å få til en generell FHIR-server som kan dekke alle behov</li>
+</ul>
+</div>
+<div class="section" id="eksempel-pa-fhir-bundle">
+<h2>Eksempel på FHIR-bundle<a class="headerlink" href="#eksempel-pa-fhir-bundle" title="Permalink til denne oversikten">¶</a></h2>
+<p>For å dekke det funksjonelle behovet benytter vi disse ressursene med felter:</p>
+<ul class="simple">
+<li>Encounter</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>Encounter.status: Om timen er fremtidig, ferdig osv. (planned, arrived, in-progress, on-leave, finished, cancelled)</li>
+<li>Encounter.class: Type kontakt (inpatient, outpatient, ambulatory, emergency, home, field, daytime, virtual, other)</li>
+<li>Encounter.period: Start- og slutt-tid</li>
+<li>Encounter.location.location: Referanse til oppmøtested</li>
+<li>Encounter.incomingReferral: Referanse til henvisning</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>Location</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>Location.name: Oppmøtested</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>DocumentReference</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>DocumentReference.description: Tekst som vises i klikkbar lenke</li>
+<li>DocumentReference.context.encounter: Referanse til kontakt</li>
+<li>DocumentReference.masterIdentifier: XDS dokument-ID</li>
+</ul>
+</div></blockquote>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">&lt;Bundle</span> <span class="na">xmlns=</span><span class="s">&quot;http://hl7.org/fhir&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;type</span> <span class="na">value=</span><span class="s">&quot;searchset&quot;</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;entry&gt;</span>
+    <span class="nt">&lt;resource&gt;</span>
+      <span class="nt">&lt;Encounter&gt;</span>
+        <span class="nt">&lt;location&gt;</span>
+          <span class="nt">&lt;location&gt;</span>
+            <span class="nt">&lt;reference</span> <span class="na">value=</span><span class="s">&quot;Location/2&quot;</span><span class="nt">/&gt;</span>
+          <span class="nt">&lt;/location&gt;</span>
+        <span class="nt">&lt;/location&gt;</span>
+        <span class="nt">&lt;period&gt;</span>
+          <span class="nt">&lt;start</span> <span class="na">value=</span><span class="s">&quot;2016-05-03T12:30:00+02:00&quot;</span><span class="nt">/&gt;</span>
+          <span class="nt">&lt;end</span> <span class="na">value=</span><span class="s">&quot;2016-05-03T13:00:00+02:00&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/period&gt;</span>
+        <span class="nt">&lt;id</span> <span class="na">value=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/Encounter&gt;</span>
+    <span class="nt">&lt;/resource&gt;</span>
+  <span class="nt">&lt;/entry&gt;</span>
+  <span class="nt">&lt;entry&gt;</span>
+    <span class="nt">&lt;resource&gt;</span>
+      <span class="nt">&lt;Location&gt;</span>
+        <span class="nt">&lt;name</span> <span class="na">value=</span><span class="s">&quot;Se innkallingsbrev&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;id</span> <span class="na">value=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/Location&gt;</span>
+    <span class="nt">&lt;/resource&gt;</span>
+  <span class="nt">&lt;/entry&gt;</span>
+  <span class="nt">&lt;entry&gt;</span>
+    <span class="nt">&lt;resource&gt;</span>
+      <span class="nt">&lt;Location&gt;</span>
+        <span class="nt">&lt;name</span> <span class="na">value=</span><span class="s">&quot;Medisinsk poliklinikk, Søndregate 18, STOKMARKNES&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;id</span> <span class="na">value=</span><span class="s">&quot;2&quot;</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/Location&gt;</span>
+    <span class="nt">&lt;/resource&gt;</span>
+  <span class="nt">&lt;/entry&gt;</span>
+  <span class="nt">&lt;entry&gt;</span>
+    <span class="nt">&lt;resource&gt;</span>
+      <span class="nt">&lt;Location&gt;</span>
+        <span class="nt">&lt;name</span> <span class="na">value=</span><span class="s">&quot;Beh.omr.K3 Bodø, Prinsensgt. 164, Bodø&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;id</span> <span class="na">value=</span><span class="s">&quot;3&quot;</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;/Location&gt;</span>
+    <span class="nt">&lt;/resource&gt;</span>
+  <span class="nt">&lt;/entry&gt;</span>
+  <span class="nt">&lt;entry&gt;</span>
+    <span class="nt">&lt;resource&gt;</span>
+      <span class="nt">&lt;DocumentReference&gt;</span>
+        <span class="nt">&lt;context&gt;</span>
+          <span class="nt">&lt;encounter&gt;</span>
+            <span class="nt">&lt;reference</span> <span class="na">value=</span><span class="s">&quot;Encounter/2&quot;</span><span class="nt">/&gt;</span>
+          <span class="nt">&lt;/encounter&gt;</span>
+        <span class="nt">&lt;/context&gt;</span>
+        <span class="nt">&lt;description</span> <span class="na">value=</span><span class="s">&quot;Innkallingsbrev&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;id</span> <span class="na">value=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;masterIdentifier&gt;</span>
+          <span class="nt">&lt;value</span> <span class="na">value=</span><span class="s">&quot;157222&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/masterIdentifier&gt;</span>
+      <span class="nt">&lt;/DocumentReference&gt;</span>
+    <span class="nt">&lt;/resource&gt;</span>
+  <span class="nt">&lt;/entry&gt;</span>
+  <span class="nt">&lt;entry&gt;</span>
+    <span class="nt">&lt;resource&gt;</span>
+      <span class="nt">&lt;DocumentReference&gt;</span>
+        <span class="nt">&lt;context&gt;</span>
+          <span class="nt">&lt;encounter&gt;</span>
+            <span class="nt">&lt;reference</span> <span class="na">value=</span><span class="s">&quot;Encounter/2&quot;</span><span class="nt">/&gt;</span>
+          <span class="nt">&lt;/encounter&gt;</span>
+        <span class="nt">&lt;/context&gt;</span>
+        <span class="nt">&lt;description</span> <span class="na">value=</span><span class="s">&quot;Viktig informasjon før du kommer til timen&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;id</span> <span class="na">value=</span><span class="s">&quot;2&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;masterIdentifier&gt;</span>
+          <span class="nt">&lt;value</span> <span class="na">value=</span><span class="s">&quot;164399&quot;</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/masterIdentifier&gt;</span>
+      <span class="nt">&lt;/DocumentReference&gt;</span>
+    <span class="nt">&lt;/resource&gt;</span>
+  <span class="nt">&lt;/entry&gt;</span>
+<span class="nt">&lt;/Bundle&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="div-notater">
+<h2>Div notater<a class="headerlink" href="#div-notater" title="Permalink til denne oversikten">¶</a></h2>
+<p>mol_molekyl_timeavtale: appointment-details-component.jsx</p>
+<p>&#8220;Antatt varighet&#8221; dersom</p>
+<dl class="docutils">
+<dt>Type time bestemmes ut fra appointment.CareLevel:</dt>
+<dd>Amb(0)|Rtg(4)&#8221;infoHeaderPolyclinicAppointment&#8221;: &#8220;Poliklinisk time&#8221;,
+Ss(1): &#8220;infoHeaderPolyclinicTreatment&#8221;: &#8220;Poliklinisk behandling&#8221;,
+Imph(3): &#8220;infoHeaderHospitalization&#8221;: &#8220;Innleggelse&#8221;,
+Alle andre: &#8220;infoHeaderTreatment&#8221;: &#8220;Behandling&#8221;,</dd>
+</dl>
+<p>appointment.CareLevel</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Innholdsfortegnelse</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">FHIR for utveksling av informasjon om timer</a><ul>
+<li><a class="reference internal" href="#bakgrunn">Bakgrunn</a></li>
+<li><a class="reference internal" href="#om-fhir">Om FHIR</a></li>
+<li><a class="reference internal" href="#dagens-losning">Dagens løsning</a></li>
+<li><a class="reference internal" href="#det-funksjonelle-behovet-pa-helsenorge">Det funksjonelle behovet på helsenorge</a></li>
+<li><a class="reference internal" href="#generell-fhir-server-eller-kun-for-timer">Generell FHIR-server eller kun for timer?</a></li>
+<li><a class="reference internal" href="#noen-ting-det-kan-vaere-nyttig-a-tenke-pa">Noen ting det kan være nyttig å tenke på</a></li>
+<li><a class="reference internal" href="#eksempel-pa-fhir-bundle">Eksempel på FHIR-bundle</a></li>
+<li><a class="reference internal" href="#div-notater">Div notater</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>Denne siden</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Vis kildekode</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Hurtigsøk</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Gå" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Bernt R. Brenna.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
