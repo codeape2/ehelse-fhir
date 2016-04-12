@@ -12,13 +12,51 @@
           <start value="2016-05-03T12:30:00+02:00"/>
           <end value="2016-05-03T13:00:00+02:00"/>
         </period>
+        <class value="outpatient"/>
         <id value="1"/>
       </Encounter>
     </resource>
   </entry>
   <entry>
     <resource>
+      <Encounter>
+        <location>
+          <location>
+            <reference value="Location/1"/>
+          </location>
+        </location>
+        <period>
+          <start value="2016-05-04T14:00:00+02:00"/>
+          <end value="2016-05-04T14:30:00+02:00"/>
+        </period>
+        <class value="inpatient"/>
+        <id value="2"/>
+      </Encounter>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
+      <Encounter>
+        <location>
+          <location>
+            <reference value="Location/3"/>
+          </location>
+        </location>
+        <period>
+          <start value="2016-05-12T15:00:00+02:00"/>
+          <end value="2016-05-12T16:00:00+02:00"/>
+        </period>
+        <class value="inpatient"/>
+        <id value="3"/>
+      </Encounter>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
       <Location>
+        <managingOrganization>
+          <reference value="Organization/4"/>
+        </managingOrganization>
         <name value="Se innkallingsbrev"/>
         <id value="1"/>
       </Location>
@@ -27,6 +65,9 @@
   <entry>
     <resource>
       <Location>
+        <managingOrganization>
+          <reference value="Organization/3"/>
+        </managingOrganization>
         <name value="Medisinsk poliklinikk, Søndregate 18, STOKMARKNES"/>
         <id value="2"/>
       </Location>
@@ -35,6 +76,9 @@
   <entry>
     <resource>
       <Location>
+        <managingOrganization>
+          <reference value="Organization/3"/>
+        </managingOrganization>
         <name value="Beh.omr.K3 Bodø, Prinsensgt. 164, Bodø"/>
         <id value="3"/>
       </Location>
@@ -42,33 +86,79 @@
   </entry>
   <entry>
     <resource>
-      <DocumentReference>
-        <context>
-          <encounter>
-            <reference value="Encounter/2"/>
-          </encounter>
-        </context>
-        <description value="Innkallingsbrev"/>
+      <Organization>
+        <name value="Nordlandssykehuset HF"/>
         <id value="1"/>
+        <telecom>
+          <value value="95812112"/>
+          <system value="phone"/>
+        </telecom>
+      </Organization>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
+      <Organization>
+        <name value="Finnmarkssykehuset HF"/>
+        <id value="2"/>
+        <telecom>
+          <value value="01234"/>
+          <system value="phone"/>
+        </telecom>
+      </Organization>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
+      <Organization>
+        <name value="Medisinsk avdeling"/>
+        <id value="3"/>
+        <partOf>
+          <reference value="Organization/1"/>
+        </partOf>
+      </Organization>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
+      <Organization>
+        <name value="Gastrokirurgisk avdeling"/>
+        <id value="4"/>
+        <partOf>
+          <reference value="Organization/2"/>
+        </partOf>
+      </Organization>
+    </resource>
+  </entry>
+  <entry>
+    <resource>
+      <DocumentReference>
+        <description value="Innkallingsbrev"/>
         <masterIdentifier>
           <value value="157222"/>
         </masterIdentifier>
+        <id value="157222"/>
+        <context>
+          <encounter>
+            <reference value="Encounter/1"/>
+          </encounter>
+        </context>
       </DocumentReference>
     </resource>
   </entry>
   <entry>
     <resource>
       <DocumentReference>
-        <context>
-          <encounter>
-            <reference value="Encounter/2"/>
-          </encounter>
-        </context>
         <description value="Viktig informasjon før du kommer til timen"/>
-        <id value="2"/>
         <masterIdentifier>
           <value value="164399"/>
         </masterIdentifier>
+        <id value="164399"/>
+        <context>
+          <encounter>
+            <reference value="Encounter/1"/>
+          </encounter>
+        </context>
       </DocumentReference>
     </resource>
   </entry>

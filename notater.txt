@@ -1,0 +1,15 @@
+Div notater
+===========
+
+mol_molekyl_timeavtale: appointment-details-component.jsx
+
+"Antatt varighet" dersom
+
+Type time bestemmes ut fra appointment.CareLevel:
+    Amb(0)|Rtg(4)"infoHeaderPolyclinicAppointment": "Poliklinisk time",
+    Ss(1): "infoHeaderPolyclinicTreatment": "Poliklinisk behandling",
+    Imph(3): "infoHeaderHospitalization": "Innleggelse",
+    Alle andre: "infoHeaderTreatment": "Behandling",
+
+appointment.CareLevel
+appointment.DepartmentName

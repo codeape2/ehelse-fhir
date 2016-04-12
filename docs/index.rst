@@ -6,7 +6,7 @@ FHIR for utveksling av informasjon om timer
 Bakgrunn
 ========
 
-Helsenorge har ønske om en rikere PULL-tjeneste for timer, og ønsker å benytte FHIR for dette.
+Helsenorge har ønske om en rikere PULL-tjeneste for timer.
 
 Dette dokumentet er innspill rundt bruk av FHIR-ressurser.
 
@@ -51,9 +51,9 @@ Det funksjonelle behovet på helsenorge
     * Oppmøtetidspunkt og varighet
     * Status ("Tildelt")
     * Type time ("Poliklinisk time") -
+    * Oppmøtested ("Se innkallingsbrev")
     * Avdeling ("Medisinsk avdeling HFO")
-    * Oppmøtested ("Se innkallingsbrev")
-    * Oppmøtested ("Se innkallingsbrev")
+    * HF ("Helse Fonna HF, Haugesund")
 
 
 Generell FHIR-server eller kun for timer?
@@ -83,8 +83,7 @@ Dette valget vil påvirke både hvem som kan lage tjenesten og hvilket omfang de
      - Mindre
 
 
-Noen ting det kan være nyttig å tenke på
-========================================
+Andre ting:
 
 * Det funksjonelle behovet kan være svært forskjellig fra en integrasjon til en annen
 * Derfor kan det være vanskelig å få til en generell FHIR-server som kan dekke alle behov
@@ -101,11 +100,18 @@ For å dekke det funksjonelle behovet benytter vi disse ressursene med felter:
  * Encounter.class: Type kontakt (inpatient, outpatient, ambulatory, emergency, home, field, daytime, virtual, other)
  * Encounter.period: Start- og slutt-tid
  * Encounter.location.location: Referanse til oppmøtested
- * Encounter.incomingReferral: Referanse til henvisning
+ * (Encounter.incomingReferral: Referanse til henvisning)
 
 * Location
 
  * Location.name: Oppmøtested
+ * Location.managingOrganization: Referanse til avdeling.
+
+* Organization
+
+ * Brukes for å modellere avdeling og HF.
+ * Organization.name: Avdelingens/HFets navn.
+ * Organization.partOf: Referanse til neste nivå (Organization)
 
 * DocumentReference
 
@@ -117,17 +123,3 @@ For å dekke det funksjonelle behovet benytter vi disse ressursene med felter:
    :language: xml
    :linenos:
 
-Div notater
-===========
-
-mol_molekyl_timeavtale: appointment-details-component.jsx
-
-"Antatt varighet" dersom
-
-Type time bestemmes ut fra appointment.CareLevel:
-    Amb(0)|Rtg(4)"infoHeaderPolyclinicAppointment": "Poliklinisk time",
-    Ss(1): "infoHeaderPolyclinicTreatment": "Poliklinisk behandling",
-    Imph(3): "infoHeaderHospitalization": "Innleggelse",
-    Alle andre: "infoHeaderTreatment": "Behandling",
-
-appointment.CareLevel

@@ -2,27 +2,61 @@ from lxml import etree as ET
 from datetime import datetime as dt
 import pytz
 
+from fhirlib import FHIRElement, value, wrap_in_entry, printprettyxml, add_subelements_from_dict
+
 
 TZ = pytz.timezone("Europe/Oslo")
 
 ldt = lambda *args: TZ.localize(dt(*args))
 
+ORGANIZATIONS = [
+    {
+        "name": "Nordlandssykehuset HF",
+        "phone": "95812112",
+    },
+
+    {
+        "name": "Finnmarkssykehuset HF",
+        "phone": "01234",
+    },
+
+    {
+        "name": "Medisinsk avdeling",
+        "orgref": "1",
+    },
+
+    {
+        "name": "Gastrokirurgisk avdeling",
+        "orgref": "2",
+    }
+]
+
 LOCATIONS = [
-    "Se innkallingsbrev",
-    "Medisinsk poliklinikk, Søndregate 18, STOKMARKNES",
-    "Beh.omr.K3 Bodø, Prinsensgt. 164, Bodø",
+    {
+        "name": "Se innkallingsbrev",
+        "orgref": "4",
+    },
+    {
+        "name": "Medisinsk poliklinikk, Søndregate 18, STOKMARKNES",
+        "orgref": "3",
+    },
+    {
+        "name": "Beh.omr.K3 Bodø, Prinsensgt. 164, Bodø",
+        "orgref": "3",
+
+    },
 ]
 
 DOCUMENTREFERENCES = [
     {
         "description": "Innkallingsbrev",
-        "encounterref": "2",
+        "encounterref": "1",
         "xdsdocid": "157222",
     },
 
     {
         "description": "Viktig informasjon før du kommer til timen",
-        "encounterref": "2",
+        "encounterref": "1",
         "xdsdocid": "164399",
     }
 ]
@@ -33,53 +67,49 @@ ENCOUNTERS = [
         "end": ldt(2016, 5, 3, 13, 0),
         "locationref": "2",
         "class": "outpatient" # inpatient, outpatient, ambulatory, emergency, home, field, daytime, virtual, other
+    },
+
+    {
+        "start": ldt(2016, 5, 4, 14),
+        "end": ldt(2016, 5, 4, 14, 30),
+        "locationref": "1",
+        "class": "inpatient",
+    },
+
+    {
+        "start": ldt(2016, 5, 12, 15),
+        "end": ldt(2016, 5, 12, 16),
+        "locationref": "3",
+        "class": "inpatient",
     }
 ]
 
-FHIR_NAMESPACE = "http://hl7.org/fhir"
-FHIR = "{" + FHIR_NAMESPACE + "}"
 
+def OrganizationElement(id, organization_dict):
+    retval = FHIRElement("Organization", id=value(id), name=value(organization_dict["name"]))
+    if "orgref" in organization_dict:
+        add_subelements_from_dict(retval, {"partOf": {"reference": value("Organization/{}".format(organization_dict["orgref"]))}})
+    if "phone" in organization_dict:
+        add_subelements_from_dict(retval, {"telecom": {"system": value("phone"), "value": value(organization_dict["phone"])}})
+    return retval
 
-def FHIRElement(resourcetype, **kwargs):
-    resource = ET.Element(FHIR + resourcetype, nsmap={None: FHIR_NAMESPACE})
-    add_subelements_from_dict(resource, kwargs)
-    return resource
-
-
-def add_subelements_from_dict(element, subelements_dict):
-    for k, v in subelements_dict.items():
-        if k.startswith("@"):
-            element.attrib[k[1:]] = v
-        else:
-            if k == "class_":
-                k = "class"
-            subelement = ET.SubElement(element, FHIR + k)
-            add_subelements_from_dict(subelement, v)
-        #add_subelements_from_dict(subelement, v)
-
-
-def printprettyxml(elmt):
-    print(prettyxml(elmt))
-
-
-def prettyxml(elmt):
-    return ET.tostring(elmt, encoding="unicode", pretty_print=True)
-
-
-def value(text):
-    return {"@value": text}
-
-
-def wrap_in_entry(resource):
-    entry = FHIRElement("entry")
-    resource_wrapper = FHIRElement("resource")
-    entry.append(resource_wrapper)
-    resource_wrapper.append(resource)
-    return entry
 
 bundle = FHIRElement("Bundle", type=value("searchset"))
 
-locations = [FHIRElement("Location", id=value(str(i + 1)), name=value(text)) for i, text in enumerate(LOCATIONS)]
+locations = [
+    FHIRElement(
+        "Location",
+        id=value(str(i + 1)),
+        name=value(location_dict["name"]),
+        managingOrganization={"reference": value("Organization/{}".format(location_dict["orgref"]))}
+    )
+    for i, location_dict in enumerate(LOCATIONS)
+]
+organizations = [
+    OrganizationElement(str(i+1), organization_dict)
+    for i, organization_dict in enumerate(ORGANIZATIONS)
+]
+
 encounters = [
     FHIRElement(
         "Encounter",
@@ -108,6 +138,7 @@ documentreferences = [
 #location = FHIRElement("Location", name=value(LOCATIONS[0]))
 bundle.extend(wrap_in_entry(encounter) for encounter in encounters)
 bundle.extend(wrap_in_entry(location) for location in locations)
+bundle.extend(wrap_in_entry(organization) for organization in organizations)
 bundle.extend(wrap_in_entry(dref) for dref in documentreferences)
 #printprettyxml(location)
 printprettyxml(bundle)
